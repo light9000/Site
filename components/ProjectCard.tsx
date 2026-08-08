@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Project } from "@/lib/types";
 import { colorForCategory } from "@/lib/palette";
+import Link from "next/link";
 
 export function ProjectCard({
   project,
@@ -13,7 +14,8 @@ export function ProjectCard({
   const color = primaryCategory ? colorForCategory(primaryCategory) : null;
 
   return (
-    <div
+    <Link
+      href={`/trabalho/${project.id}`}
       className={`group relative overflow-hidden rounded-xl bg-card ${
         featured ? "aspect-4/3 md:col-span-2 md:row-span-2" : "aspect-4/3"
       }`}
@@ -37,6 +39,6 @@ export function ProjectCard({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

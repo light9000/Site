@@ -40,6 +40,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const printLinksRaw = String(formData.get("print_links") || "");
+const printLinks = printLinksRaw
+  .split(",")
+  .map((l) => l.trim())
+  .filter(Boolean);
+
   const extension = file.name.split(".").pop() || "jpg";
   const path = `${crypto.randomUUID()}.${extension}`;
 
@@ -63,6 +69,7 @@ export async function POST(request: NextRequest) {
       categories,
       image_url: publicUrl,
       storage_path: path,
+      print_links: printLinks.length > 0 ? printLinks : null,
     })
     .select()
     .single();
@@ -71,6 +78,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
+  return NextResponse.json({ project: data });
+}
+
+export async function PATCH(request: NextRequest) {
+  if (!(await requireAuth())) {
+    return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
+  }
+  const admin = getSupabaseAdminClient();
+  if (!admin) {
+    return NextResponse.json({ error: "Supabase não configurado." }, { status: 500 });
+  }
+
+  const formData = await request.formData();
+  const id = String(formData.get("id") || "");
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const categories = String(formData.get("categories") || "")
+    .split(",").map((c) => c.trim().toLowerCase()).filter(Boolean);
+  const printLinks = String(formData.get("print_links") || "")
+    .split(",").map((l) => l.trim()).filter(Boolean);
+  const file = formData.get("image") as File | null;
+
+  if (!id || !title || categories.length === 0) {
+    return NextResponse.json({ error: "título e categorias são obrigatórios." }, { status: 400 });
+  }
+
+  const update: Record<string, unknown> = {
+    title,
+    description: description || null,
+    categories,
+    print_links: printLinks.length > 0 ? printLinks : null,
+  };
+
+  if (file && file.size > 0) {
+    const { data: existing } = await admin.from("projects").select("storage_path").eq("id", id).single();
+    const extension = file.name.split(".").pop() || "jpg";
+    const path = `${crypto.randomUUID()}.${extension}`;
+    const { error: uploadError } = await admin.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: false });
+    if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
+    const { data: { publicUrl } } = admin.storage.from(BUCKET).getPublicUrl(path);
+    update.image_url = publicUrl;
+    update.storage_path = path;
+    if (existing?.storage_path) await admin.storage.from(BUCKET).remove([existing.storage_path]);
+  }
+
+  const { data, error } = await admin.from("projects").update(update).eq("id", id).select().single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ project: data });
 }
 

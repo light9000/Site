@@ -6,13 +6,11 @@ export function AboutContact() {
           <div className="flex items-start">
             <span className="tri" style={{ color: "var(--maroon)" }} aria-hidden="true" />
             <h2 className="font-display ml-3 text-base font-semibold text-ink">
-              sobre
+              About
             </h2>
           </div>
           <p className="max-w-xl text-base leading-relaxed text-ink-soft">
-            Ilustradora e designer com um estilo assente em cores sólidas e
-            formas geométricas. Trabalha entre o infantil, o familiar e o
-            editorial, sempre à procura da história por trás de cada peça.
+            Illustrator and designer with a style based on solid colors and geometric shapes. Works across children's, family, and editorial themes, always seeking the story behind each piece.
           </p>
         </div>
       </section>
@@ -26,18 +24,18 @@ export function AboutContact() {
           <div className="flex items-start">
             <span className="tri" style={{ color: "var(--teal)" }} aria-hidden="true" />
             <h2 className="font-display ml-3 text-base font-semibold text-ink">
-              contacto
+              Contact
             </h2>
           </div>
           <div>
             <p className="max-w-xl text-base leading-relaxed text-ink-soft">
-              Disponível para novos projetos de ilustração e design.
+              Available for freelance work. If you have a project in mind or just want to say hello, feel free to reach out!
             </p>
             <a
-              href="mailto:ola@exemplo.com"
+              href="mailto:claudiaaribeiroo94@gmail.com"
               className="font-display mt-4 inline-block text-2xl font-bold text-ink underline decoration-terracotta decoration-2 underline-offset-4 md:text-3xl"
             >
-              ola@exemplo.com
+              Send an email
             </a>
           </div>
         </div>
@@ -49,9 +47,9 @@ export function AboutContact() {
 export function Footer() {
   return (
     <footer className="flex items-center justify-between px-6 py-6 text-xs text-ink-soft md:px-10">
-      <span>claudia v. © {new Date().getFullYear()}</span>
+      <span>HugoVieira© {new Date().getFullYear()}</span>
       <a href="/admin" className="transition-colors hover:text-ink">
-        área reservada
+        Reserved Area
       </a>
     </footer>
   );

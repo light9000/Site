@@ -11,6 +11,7 @@ export const SEED_PROJECTS: Project[] = [
     categories: ["infantil"],
     image_url: "/seed/o-lobo-a-porta.jpg",
     created_at: "2026-01-01T00:00:00.000Z",
+    print_links: null,
   },
   {
     id: "seed-2",
@@ -19,6 +20,7 @@ export const SEED_PROJECTS: Project[] = [
     categories: ["familiar"],
     image_url: "/seed/placeholder-familiar.svg",
     created_at: "2026-01-02T00:00:00.000Z",
+    print_links: null,
   },
   {
     id: "seed-3",
@@ -27,6 +29,7 @@ export const SEED_PROJECTS: Project[] = [
     categories: ["editorial"],
     image_url: "/seed/placeholder-editorial.svg",
     created_at: "2026-01-03T00:00:00.000Z",
+    print_links: null,
   },
   {
     id: "seed-4",
@@ -35,5 +38,6 @@ export const SEED_PROJECTS: Project[] = [
     categories: ["branding"],
     image_url: "/seed/placeholder-branding.svg",
     created_at: "2026-01-04T00:00:00.000Z",
+    print_links: null,
   },
 ];

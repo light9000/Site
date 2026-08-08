@@ -7,14 +7,14 @@ export function Header() {
         href="/"
         className="font-display text-lg font-bold tracking-tight text-ink"
       >
-        claudia v.
+        Cláudia Vieira
       </Link>
       <nav className="flex items-center gap-6 text-sm text-ink-soft">
         <a href="#sobre" className="transition-colors hover:text-ink">
-          sobre
+          About
         </a>
         <a href="#contacto" className="transition-colors hover:text-ink">
-          contacto
+          Contact
         </a>
       </nav>
     </header>

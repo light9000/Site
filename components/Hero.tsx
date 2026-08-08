@@ -19,11 +19,10 @@ export function Hero() {
         />
       </div>
       <h1 className="font-display mt-4 max-w-2xl text-4xl font-bold leading-[1.05] tracking-tight text-ink md:text-6xl">
-        formas sólidas, histórias com alma.
+        Solid forms, stories with soul.
       </h1>
       <p className="mt-4 max-w-md text-base leading-relaxed text-ink-soft">
-        ilustração e design geométrico — do infantil ao editorial, cada
-        trabalho conta uma história diferente.
+        Illustrator and designer with a style based on solid colors and geometric shapes. Works across children's, family, and editorial themes, always seeking the story behind each piece.
       </p>
     </section>
   );

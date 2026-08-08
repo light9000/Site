@@ -6,17 +6,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { Project } from "@/lib/types";
 
+
+
 export function AdminDashboard({
   initialProjects,
   supabaseConfigured,
+  initialCategories,
 }: {
   initialProjects: Project[];
   supabaseConfigured: boolean;
+  initialCategories: string[];
 }) {
   const [projects, setProjects] = useState(initialProjects);
   const [title, setTitle] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [description, setDescription] = useState("");
-  const [categories, setCategories] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [availableCategories, setAvailableCategories] = useState(initialCategories);
+  const [newCategory, setNewCategory] = useState("");
+  const [printLinks, setPrintLinks] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(
@@ -24,37 +32,77 @@ export function AdminDashboard({
   );
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!file) {
-      setMessage({ type: "error", text: "escolhe uma imagem." });
-      return;
-    }
-    setSubmitting(true);
-    setMessage(null);
+  async function handleAddCategory() {
+  const name = newCategory.trim().toLowerCase();
+  if (!name || availableCategories.includes(name)) return;
+  const res = await fetch("/api/admin/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  });
+  if (res.ok) {
+    setAvailableCategories((prev) => [...prev, name].sort());
+    setNewCategory("");
+  }
+}
 
-    const formData = new FormData();
-    formData.set("title", title);
-    formData.set("description", description);
-    formData.set("categories", categories);
-    formData.set("image", file);
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  if (!editingId && !file) {
+    setMessage({ type: "error", text: "escolhe uma imagem." });
+    return;
+  }
+  setSubmitting(true);
+  setMessage(null);
 
-    const res = await fetch("/api/admin/projects", { method: "POST", body: formData });
-    const body = await res.json();
-    setSubmitting(false);
+  const formData = new FormData();
+  if (editingId) formData.set("id", editingId);
+  formData.set("title", title);
+  formData.set("description", description);
+  formData.set("categories", categories.join(","));
+  formData.set("print_links", printLinks);
+  if (file) formData.set("image", file);
 
-    if (!res.ok) {
-      setMessage({ type: "error", text: body.error || "algo correu mal." });
-      return;
-    }
+  const res = await fetch("/api/admin/projects", {
+    method: editingId ? "PATCH" : "POST",
+    body: formData,
+  });
+  const body = await res.json();
+  setSubmitting(false);
 
+  if (!res.ok) {
+    setMessage({ type: "error", text: body.error || "algo correu mal." });
+    return;
+  }
+
+  if (editingId) {
+    setProjects((prev) => prev.map((p) => (p.id === editingId ? body.project : p)));
+    setMessage({ type: "ok", text: "trabalho atualizado." });
+  } else {
     setProjects((prev) => [body.project, ...prev]);
-    setTitle("");
-    setDescription("");
-    setCategories("");
-    setFile(null);
     setMessage({ type: "ok", text: "trabalho adicionado." });
   }
+  resetForm();
+}
+
+function resetForm() {
+  setEditingId(null);
+  setTitle("");
+  setDescription("");
+  setCategories([]);
+  setPrintLinks("");
+  setFile(null);
+}
+
+function startEdit(project: Project) {
+  setEditingId(project.id);
+  setTitle(project.title);
+  setDescription(project.description || "");
+  setCategories(project.categories);
+  setPrintLinks((project.print_links || []).join(", "));
+  setFile(null);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
   async function handleDelete(id: string) {
     if (!confirm("remover este trabalho?")) return;
@@ -104,8 +152,8 @@ export function AdminDashboard({
         className="mb-12 max-w-xl rounded-xl border border-ink/10 bg-white/40 p-6"
       >
         <h2 className="font-display mb-4 text-sm font-semibold text-ink">
-          novo trabalho
-        </h2>
+  {editingId ? "editar trabalho" : "novo trabalho"}
+</h2>
 
         <label className="mb-1 block text-sm text-ink-soft" htmlFor="title">
           título
@@ -128,17 +176,39 @@ export function AdminDashboard({
           rows={2}
           className="mb-3 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm outline-none focus:border-terracotta"
         />
+        <div className="mb-2 flex gap-2">
+          <input
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddCategory();
+              }
+            }}
+            placeholder="nova categoria"
+            className="flex-1 rounded-md border border-ink/20 bg-white px-3 py-1.5 text-sm outline-none focus:border-terracotta"
+          />
+          <button
+            type="button"
+            onClick={handleAddCategory}
+            className="rounded-md border border-ink/20 px-3 py-1.5 text-sm text-ink-soft hover:border-ink"
+          >
+            + adicionar
+          </button>
+        </div>
 
-        <label className="mb-1 block text-sm text-ink-soft" htmlFor="categories">
-          categorias (separadas por vírgula — ex: infantil, editorial)
+        <label className="mb-1 block text-sm text-ink-soft">categorias</label> <div className="mb-3 flex flex-wrap gap-2"> {availableCategories.map((cat) => { const selected = categories.includes(cat); return ( <button type="button" key={cat} onClick={() => setCategories((prev) => selected ? prev.filter((c) => c !== cat) : [...prev, cat] ) } className={`rounded-md border px-3 py-1.5 text-sm capitalize ${ selected ? "border-ink bg-ink text-paper" : "border-ink/20 text-ink-soft" }`} > {cat} </button> ); })} </div>
+
+        <label className="mb-1 block text-sm text-ink-soft" htmlFor="print_links">
+          links externos (opcional — separados por vírgula)
         </label>
         <input
-          id="categories"
-          value={categories}
-          onChange={(e) => setCategories(e.target.value)}
-          placeholder="infantil, familiar"
+          id="print_links"
+          value={printLinks}
+          onChange={(e) => setPrintLinks(e.target.value)}
+          placeholder="https://redbubble.com/..., https://society6.com/..."
           className="mb-3 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm outline-none focus:border-terracotta"
-          required
         />
 
         <label className="mb-1 block text-sm text-ink-soft" htmlFor="image">
@@ -150,7 +220,7 @@ export function AdminDashboard({
           accept="image/*"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
           className="mb-4 w-full text-sm"
-          required
+          required={!editingId}
         />
 
         {message && (
@@ -187,15 +257,23 @@ export function AdminDashboard({
                 className="object-cover"
               />
             </div>
-            <div className="flex items-center justify-between px-2 py-2">
-              <p className="truncate text-xs text-white">{project.title}</p>
-              <button
-                onClick={() => handleDelete(project.id)}
-                className="text-xs text-terracotta hover:underline"
-              >
-                remover
-              </button>
-            </div>
+            <div className="flex items-center justify-between gap-2 px-2 py-2">
+  <p className="truncate text-xs text-white">{project.title}</p>
+  <div className="flex shrink-0 gap-1.5">
+    <button
+      onClick={() => startEdit(project)}
+      className="rounded border border-white/30 px-2 py-0.5 text-xs text-white hover:bg-white hover:text-ink"
+    >
+      editar
+    </button>
+    <button
+      onClick={() => handleDelete(project.id)}
+      className="rounded border border-terracotta px-2 py-0.5 text-xs text-terracotta hover:bg-terracotta hover:text-white"
+    >
+      remover
+    </button>
+  </div>
+</div>
           </div>
         ))}
       </div>

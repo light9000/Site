@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f2ede4;
+  --paper-dim: #e8e1d3;
+  --ink: #17181a;
+  --ink-soft: #4a4a47;
+  --card: #14181c;
+
+  --terracotta: #b23a1d;
+  --teal: #17685a;
+  --amber: #d9a441;
+  --maroon: #7a2320;
+
+  --font-display: var(--font-archivo);
+  --font-body: var(--font-inter);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-card: var(--card);
+  --color-terracotta: var(--terracotta);
+  --color-teal: var(--teal);
+  --color-amber: var(--amber);
+  --color-maroon: var(--maroon);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--terracotta);
+  color: var(--paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Signature triangle marker used throughout for category identity */
+.tri {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 12px solid currentColor;
+  display: inline-block;
+}
+
+.tri-lg {
+  border-left-width: 11px;
+  border-right-width: 11px;
+  border-bottom-width: 19px;
+}

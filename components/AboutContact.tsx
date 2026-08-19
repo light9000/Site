@@ -35,7 +35,7 @@ export function AboutContact() {
               href="mailto:claudiaaribeiroo94@gmail.com"
               className="font-display mt-4 inline-block text-2xl font-bold text-ink underline decoration-terracotta decoration-2 underline-offset-4 md:text-3xl"
             >
-              Send an email
+              Let's work together 💻
             </a>
           </div>
         </div>

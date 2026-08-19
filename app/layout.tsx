@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Inter } from "next/font/google";
 import "./globals.css";
+import { BackToTop } from "@/components/BackToTop";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="pt">
       <body className={`${archivo.variable} ${inter.variable} antialiased`}>
         {children}
+        <BackToTop />
       </body>
     </html>
   );

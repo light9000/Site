@@ -49,40 +49,56 @@ export function AdminDashboard({
 async function handleSubmit(e: React.FormEvent) {
   e.preventDefault();
   if (!editingId && !file) {
-    setMessage({ type: "error", text: "escolhe uma imagem." });
+    setMessage({ type: "error", text: "choose an image." });
     return;
   }
   setSubmitting(true);
   setMessage(null);
 
-  const formData = new FormData();
-  if (editingId) formData.set("id", editingId);
-  formData.set("title", title);
-  formData.set("description", description);
-  formData.set("categories", categories.join(","));
-  formData.set("print_links", printLinks);
-  if (file) formData.set("image", file);
+  try {
+    let uploadFile = file;
+    if (uploadFile) {
+      uploadFile = await resizeImage(uploadFile);
+    }
 
-  const res = await fetch("/api/admin/projects", {
-    method: editingId ? "PATCH" : "POST",
-    body: formData,
-  });
-  const body = await res.json();
-  setSubmitting(false);
+    const formData = new FormData();
+    if (editingId) formData.set("id", editingId);
+    formData.set("title", title);
+    formData.set("description", description);
+    formData.set("categories", categories.join(","));
+    formData.set("print_links", printLinks);
+    if (uploadFile) formData.set("image", uploadFile);
 
-  if (!res.ok) {
-    setMessage({ type: "error", text: body.error || "algo correu mal." });
-    return;
+    const res = await fetch("/api/admin/projects", {
+      method: editingId ? "PATCH" : "POST",
+      body: formData,
+    });
+
+    let body: { project?: Project; error?: string } = {};
+    try {
+      body = await res.json();
+    } catch {
+      body = { error: "invalid server response." };
+    }
+
+    if (!res.ok) {
+      setMessage({ type: "error", text: body.error || "something went wrong." });
+      return;
+    }
+
+    if (editingId) {
+      setProjects((prev) => prev.map((p) => (p.id === editingId ? body.project! : p)));
+      setMessage({ type: "ok", text: "work updated." });
+    } else {
+      setProjects((prev) => [body.project!, ...prev]);
+      setMessage({ type: "ok", text: "work added." });
+    }
+    resetForm();
+  } catch {
+    setMessage({ type: "error", text: "network error — try again." });
+  } finally {
+    setSubmitting(false);
   }
-
-  if (editingId) {
-    setProjects((prev) => prev.map((p) => (p.id === editingId ? body.project : p)));
-    setMessage({ type: "ok", text: "trabalho atualizado." });
-  } else {
-    setProjects((prev) => [body.project, ...prev]);
-    setMessage({ type: "ok", text: "trabalho adicionado." });
-  }
-  resetForm();
 }
 
 function resetForm() {
@@ -279,4 +295,29 @@ function startEdit(project: Project) {
       </div>
     </main>
   );
+}
+
+async function resizeImage(file: File, maxDimension = 2000, quality = 0.85): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+  const width = Math.round(bitmap.width * scale);
+  const height = Math.round(bitmap.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return file;
+  ctx.drawImage(bitmap, 0, 0, width, height);
+
+  const blob: Blob | null = await new Promise((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", quality)
+  );
+  if (!blob) return file;
+
+  return new File([blob.slice(0, blob.size, blob.type)], file.name.replace(/\.[^.]+$/, "") + ".jpg", {
+    type: "image/jpeg",
+  });
 }

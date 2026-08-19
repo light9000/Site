@@ -14,18 +14,18 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
     return Array.from(set).sort((a, b) => a.localeCompare(b, "pt"));
   }, [projects]);
 
-  const [active, setActive] = useState<string>("todos");
+  const [active, setActive] = useState<string>("All");
 
   const visibleCategories =
-    active === "todos" ? categories : categories.filter((c) => c === active);
+    active === "All" ? categories : categories.filter((c) => c === active);
 
   return (
     <div>
       <div className="flex flex-wrap gap-2 border-b border-ink/10 px-6 pb-6 md:px-10">
         <FilterPill
-          label="todos"
-          active={active === "todos"}
-          onClick={() => setActive("todos")}
+          label="All"
+          active={active === "All"}
+          onClick={() => setActive("All")}
         />
         {categories.map((category) => (
           <FilterPill

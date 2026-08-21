@@ -52,20 +52,7 @@ export default async function ProjectPage({
             {project.description}
           </p>
         )}
-        {project.print_links && project.print_links.length > 0 && (
-          <div className="mt-6">
-            <h3 className="font-display text-lg font-bold text-ink">Links Externos</h3>
-            <ul className="mt-3 space-y-2">
-              {project.print_links.map((link, index) => (
-                <li key={index} className="text-ink-soft hover:text-ink underline decoration-terracotta decoration-2 underline-offset-4">
-                  <a href={link} target="_blank" rel="noopener noreferrer">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        
       </div>
     </main>
   );

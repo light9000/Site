@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f2ede4;
+    --paper: #ecc8a0;
   --paper-dim: #e8e1d3;
   --ink: #17181a;
   --ink-soft: #4a4a47;
@@ -11,6 +11,7 @@
   --teal: #17685a;
   --amber: #d9a441;
   --maroon: #7a2320;
+  --contact-bg: #163436;
 
   --font-display: var(--font-archivo);
   --font-body: var(--font-inter);
@@ -26,6 +27,7 @@
   --color-teal: var(--teal);
   --color-amber: var(--amber);
   --color-maroon: var(--maroon);
+  --color-contact-bg: var(--contact-bg);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }

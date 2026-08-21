@@ -5,7 +5,13 @@ import { Project } from "@/lib/types";
 import { colorForCategory } from "@/lib/palette";
 import { ProjectCard } from "./ProjectCard";
 
-export function PortfolioExplorer({ projects }: { projects: Project[] }) {
+export function PortfolioExplorer({
+  projects,
+  categoryDescriptions = {},
+}: {
+  projects: Project[];
+  categoryDescriptions?: Record<string, string>;
+}) {
   const categories = useMemo(() => {
     const set = new Set<string>();
     for (const project of projects) {
@@ -38,10 +44,16 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
         ))}
       </div>
 
+      {active !== "All" && categoryDescriptions[active] && (
+        <p className="px-6 pt-6 text-sm text-ink-soft md:px-10">
+          {categoryDescriptions[active]}
+        </p>
+      )}
+
       <div className="px-6 md:px-10">
         {visibleCategories.length === 0 && (
           <p className="py-16 text-center text-sm text-ink-soft">
-            ainda não há trabalhos nesta categoria.
+                        No work in this category yet.
           </p>
         )}
         {visibleCategories.map((category) => {
@@ -57,12 +69,8 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:auto-rows-[1fr]">
-                {items.map((project, index) => (
-                  <ProjectCard
-                    key={project.id}
-                    project={project}
-                    featured={index === 0 && items.length > 1}
-                  />
+                        {items.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
                 ))}
               </div>
             </section>

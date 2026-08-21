@@ -66,7 +66,6 @@ async function handleSubmit(e: React.FormEvent) {
     formData.set("title", title);
     formData.set("description", description);
     formData.set("categories", categories.join(","));
-    formData.set("print_links", printLinks);
     if (uploadFile) formData.set("image", uploadFile);
 
     const res = await fetch("/api/admin/projects", {
@@ -115,7 +114,6 @@ function startEdit(project: Project) {
   setTitle(project.title);
   setDescription(project.description || "");
   setCategories(project.categories);
-  setPrintLinks((project.print_links || []).join(", "));
   setFile(null);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -216,16 +214,7 @@ function startEdit(project: Project) {
 
         <label className="mb-1 block text-sm text-ink-soft">categorias</label> <div className="mb-3 flex flex-wrap gap-2"> {availableCategories.map((cat) => { const selected = categories.includes(cat); return ( <button type="button" key={cat} onClick={() => setCategories((prev) => selected ? prev.filter((c) => c !== cat) : [...prev, cat] ) } className={`rounded-md border px-3 py-1.5 text-sm capitalize ${ selected ? "border-ink bg-ink text-paper" : "border-ink/20 text-ink-soft" }`} > {cat} </button> ); })} </div>
 
-        <label className="mb-1 block text-sm text-ink-soft" htmlFor="print_links">
-          links externos (opcional — separados por vírgula)
-        </label>
-        <input
-          id="print_links"
-          value={printLinks}
-          onChange={(e) => setPrintLinks(e.target.value)}
-          placeholder="https://redbubble.com/..., https://society6.com/..."
-          className="mb-3 w-full rounded-md border border-ink/20 bg-white px-3 py-2 text-sm outline-none focus:border-terracotta"
-        />
+        
 
         <label className="mb-1 block text-sm text-ink-soft" htmlFor="image">
           imagem

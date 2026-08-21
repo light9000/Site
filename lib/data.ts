@@ -10,7 +10,7 @@ export async function getProjects(): Promise<Project[]> {
 
   const { data, error } = await supabase
     .from("projects")
-    .select("id, title, description, categories, image_url, print_links, created_at")
+    .select("id, title, description, categories, image_url, created_at")
     .order("created_at", { ascending: false });
 
   if (error || !data) {
@@ -29,7 +29,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
 
   const { data, error } = await supabase
     .from("projects")
-    .select("id, title, description, categories, image_url, print_links, created_at")
+    .select("id, title, description, categories, image_url, created_at")
     .eq("id", id)
     .single();
 
@@ -46,6 +46,20 @@ export function groupByCategory(projects: Project[]): Map<string, Project[]> {
     }
   }
   return grouped;
+}
+
+export async function getCategoryDescriptions(): Promise<Record<string, string>> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return {};
+
+  const { data, error } = await supabase.from("categories").select("name, description");
+  if (error || !data) return {};
+
+  const map: Record<string, string> = {};
+  for (const row of data) {
+    if (row.description) map[row.name] = row.description;
+  }
+  return map;
 }
 
 const DEFAULT_CATEGORIES = ["infantil", "familiar", "editorial", "branding"];

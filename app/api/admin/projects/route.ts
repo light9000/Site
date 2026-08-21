@@ -40,11 +40,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const printLinksRaw = String(formData.get("print_links") || "");
-const printLinks = printLinksRaw
-  .split(",")
-  .map((l) => l.trim())
-  .filter(Boolean);
+
 
   const extension = file.name.split(".").pop() || "jpg";
   const path = `${crypto.randomUUID()}.${extension}`;
@@ -69,7 +65,6 @@ const printLinks = printLinksRaw
       categories,
       image_url: publicUrl,
       storage_path: path,
-      print_links: printLinks.length > 0 ? printLinks : null,
     })
     .select()
     .single();
@@ -96,8 +91,6 @@ export async function PATCH(request: NextRequest) {
   const description = String(formData.get("description") || "").trim();
   const categories = String(formData.get("categories") || "")
     .split(",").map((c) => c.trim().toLowerCase()).filter(Boolean);
-  const printLinks = String(formData.get("print_links") || "")
-    .split(",").map((l) => l.trim()).filter(Boolean);
   const file = formData.get("image") as File | null;
 
   if (!id || !title || categories.length === 0) {
@@ -108,7 +101,6 @@ export async function PATCH(request: NextRequest) {
     title,
     description: description || null,
     categories,
-    print_links: printLinks.length > 0 ? printLinks : null,
   };
 
   if (file && file.size > 0) {

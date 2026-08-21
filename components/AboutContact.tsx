@@ -1,3 +1,6 @@
+import { SOCIAL_LINKS } from "@/lib/social-links";
+
+
 export function AboutContact() {
   return (
     <>
@@ -18,22 +21,23 @@ export function AboutContact() {
       <section
         id="contacto"
         className="px-6 py-16 md:px-10 md:py-24"
-        style={{ background: "var(--paper-dim)" }}
+        style={{ background: "var(--contact-bg)" }}
       >
+        
         <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
           <div className="flex items-start">
-            <span className="tri" style={{ color: "var(--teal)" }} aria-hidden="true" />
-            <h2 className="font-display ml-3 text-base font-semibold text-ink">
+            <span className="tri" style={{ color: "var(--amber)" }} aria-hidden="true" />
+            <h2 className="font-display ml-3 text-base font-semibold text-[#d28203]">
               Contact
             </h2>
           </div>
           <div>
-            <p className="max-w-xl text-base leading-relaxed text-ink-soft">
+            <p className="max-w-xl text-base leading-relaxed text-paper/80">
               Available for freelance work. If you have a project in mind or just want to say hello, feel free to reach out!
             </p>
             <a
               href="mailto:claudiaaribeiroo94@gmail.com"
-              className="font-display mt-4 inline-block text-2xl font-bold text-ink underline decoration-terracotta decoration-2 underline-offset-4 md:text-3xl"
+                            className="font-display mt-4 inline-block text-2xl font-bold text-[#d28203] md:text-3xl"
             >
               Let's work together 💻
             </a>

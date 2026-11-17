@@ -9,13 +9,25 @@ export function AboutContact() {
           <div className="flex items-start">
             <span className="tri" style={{ color: "var(--maroon)" }} aria-hidden="true" />
             <h2 className="font-display ml-3 text-base font-semibold text-ink">
-              About
+              About me
             </h2>
-          </div>
-          <p className="max-w-xl text-base leading-relaxed text-ink-soft">
-            Illustrator and designer with a style based on solid colors and geometric shapes. Works across children's, family, and editorial themes, always seeking the story behind each piece.
-          </p>
-        </div>
+          <div className="max-w-xl space-y-4 text-base leading-relaxed text-ink-soft">
+  <p className="font-display text-lg font-semibold text-ink">
+    Welcome to my creative space!
+  </p>
+  <p>
+    I'm an independent artist creating digital illustrations and designs inspired by imagination, colour and everyday moments.
+  </p>
+  <p>
+    My work ranges from expressive artwork and visual concepts to greeting cards and creative designs made to bring a little personality, humour and colour into everyday life.
+  </p>
+  <p>
+    I enjoy exploring different ideas, combining shapes, colours and visual storytelling to create distinctive pieces.
+  </p>
+  <p>
+    Thank you for being here and supporting independent creativity!
+  </p>
+</div>
       </section>
 
       <section

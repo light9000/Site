@@ -30,12 +30,7 @@ export function AboutContact() {
 </div>
       </section>
 
-      <section
-        id="contacto"
-        className="px-6 py-16 md:px-10 md:py-24"
-        style={{ background: "var(--contact-bg)" }}
-      >
-        
+      <section id="contacto" className="px-6 py-16 md:px-10 md:py-24" style={{ background: "var(--contact-bg)"}}>
         <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
           <div className="flex items-start">
             <span className="tri" style={{ color: "var(--amber)" }} aria-hidden="true" />
